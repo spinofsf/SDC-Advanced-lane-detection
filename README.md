@@ -75,6 +75,13 @@ Applying this on chessboard images, we get
 
 ![Original Distorted Image](./writeup_images/camera_dist_correct.png)
 
+We can clearly see distortion at the top of the image due to the curved lenses corrected after applying `cv2.undistort()`
+
+
+Now let's apply distortion correction to 
+
+
+
 ###Pipeline (single images)
 
 ####1. Provide an example of a distortion-corrected image.
