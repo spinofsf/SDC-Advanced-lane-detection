@@ -24,24 +24,19 @@ The goals / steps of this project are the following:
 [image6]: ./examples/example_output.jpg "Output"
 [video1]: ./project_video.mp4 "Video"
 
-## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
-###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
-
 ---
 ###Writeup / README
 
-####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Advanced-Lane-Lines/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
-
 You're reading it!
 
-Run the python notebook for the pipeline and lane detection video. Implementation consists of the following files. 
+Run the python notebook for the pipeline and lane detection video. Implementation consists of the following files located in the source directory
 
-lane_line_detection.ipynb - Runs the pipeline on individual test images and  video  
-gen_cam_cal.py - Generates camera calibration matrix and distortion coefficients using chessboard images
-gen_process_image.py - Implements Sobel gradients, color and perspective tranforms
-gen_linefit.py - Curve fits for lane detection  
-gen_stats_display.py - Calculates curvature, offset and implemets polyfill and anotation of images
-gen_detection_pipeline.py - Implemets the entire pipeline
+* lane_line_detection.ipynb  - Runs the pipeline on individual test images and  video  
+* gen_cam_cal.py             - Generates camera calibration matrix and distortion coefficients using chessboard images
+* gen_process_image.py       - Implements Sobel gradients, color and perspective tranforms
+* gen_linefit.py             - Curve fits for lane detection  
+* gen_stats_display.py       - Calculates curvature, offset and implemets polyfill and anotation of images
+* gen_detection_pipeline.py  - Implemets the entire pipeline
     
 ###Camera Calibration
 
