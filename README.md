@@ -96,7 +96,7 @@ The following thresholds were narrowed based on experimentation.
 
 The final thresholded image is obtained by combining the various transforms as shown below. The code for thresholding is implemented in the file `source/gen_process_image.py`
 
-```
+```python
     combined_binary[(s_binary == 1) | (sxbinary == 1) | ((smagbinary == 1) & (sdirbinary == 1))] = 1
 ````
 
@@ -108,7 +108,8 @@ The below images show the effect of thresholding. The top image shows SobelX gra
 
 The thresholded image is then run through a Perspective tranform to generate a birds-eye view image. This is accomplished by the opencv functions 
 
-``` M = cv2.getPerspectiveTransform(src, dst)
+```python 
+    M = cv2.getPerspectiveTransform(src, dst)
     warped = cv2.warpPerspective(image, M, image_size, flags=cv2.INTER_LINEAR)
 ```
 This source and destination points taken for the perspective transform are shown below.
