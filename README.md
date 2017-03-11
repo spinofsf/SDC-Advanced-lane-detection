@@ -61,14 +61,14 @@ Finally calibration matrix (mtx) and distortion coefficients (dst) are calculate
 
 To remove distortion in an image, the function `cv2.undistort()` is applied with calibration matrix and distortion coefficients found above.
 ```python
-dst = cv2.undistort(img, cam_mtx, cam_dist, None, cam_mtx)
+    dst = cv2.undistort(img, cam_mtx, cam_dist, None, cam_mtx)
 ```
 
 Applying this on chessboard images, we get 
 
 ![Original Distorted Image](./writeup_images/camera_dist_correct.png)
 
-We can clearly see distortion at the top of the image due to the curved lenses corrected after applying `cv2.undistort()`
+We can clearly see distortion at the top of the left image corrected after applying `cv2.undistort()`
 
 ###Pipeline (single images)
 
@@ -97,7 +97,7 @@ The following thresholds were narrowed based on experimentation.
 The final thresholded image is obtained by combining the various transforms as shown below. The code for thresholding is implemented in the file `source/gen_process_image.py`
 
 ```
-combined_binary[(s_binary == 1) | (sxbinary == 1) | ((smagbinary == 1) & (sdirbinary == 1))] = 1
+    combined_binary[(s_binary == 1) | (sxbinary == 1) | ((smagbinary == 1) & (sdirbinary == 1))] = 1
 ````
 
 The below images show the effect of thresholding. The top image shows SobelX gradient and Color transform apllied, whereas the bottom image shows the result with all four thresholds applied
