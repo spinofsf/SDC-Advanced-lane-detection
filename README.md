@@ -40,8 +40,6 @@ Run the python notebook for the pipeline and lane detection video. Implementatio
     
 ###Camera Calibration
 
-####1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
-
 Camera matrix and distortion coefficients are calculated using a set of chessboard images and Opencv functions.
 
 First step is to map 3D real world object points to 2D image space for the chessboard images. The chessboard images are fixed on a constant XY plane during the capture of chessboard images, so object points are 3D points with Z axis of 0. 
