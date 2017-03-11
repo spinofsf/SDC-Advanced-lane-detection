@@ -79,43 +79,55 @@ We can clearly see distortion at the top of the image due to the curved lenses c
 
 ###Pipeline (single images)
 
-####1. Provide an example of a distortion-corrected image.
+####1. Distortion correction
 
 Applying the same distortion correction as above
 ![alt text](./writeup_images/dist_road.png)
 
-####2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+####2. Binary thresholding using Gradient and Color tranforms 
+A combination of color and gradient thresholds was used to generate the binary image. Four different transforms were used to generate the thresholded binary image. 
+
+*S-color tranform
+*SobelX gradient
+*Sobel gradient magnitude
+*Sobel gradient direction
+
+The following thresholds were used based on experimentation.
+
+| Transform               | Threshold     | 
+|:-----------------------:|:-------------:| 
+| S color                 | 170, 255      | 
+| SobelX grad             | 20, 100       |
+| Sobel gradmagnitude     | 20, 100       |
+| Sobel graddirection     | 0.7, 1.3      |
+
+The final thresholded image is obtained by combining the various transforms as shown below. The code for thresholding is implemented in the file `source/gen_process_image.py`
+
+```
+combined_binary[(s_binary == 1) | (sxbinary == 1) | ((smagbinary == 1) & (sdirbinary == 1))] = 1
+````
 
 ![alt text](./writeup_images/gradient_threshold.png)
 
-####3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
+####3. Perspective transform
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+The thresholded image is then run through a Perspective tranform to generate a birds-eye view image. This is accomplished by the opencv functions 
 
+``` M = cv2.getPerspectiveTransform(src, dst)
+    warped = cv2.warpPerspective(image, M, image_size, flags=cv2.INTER_LINEAR)
 ```
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
-
-```
-This resulted in the following source and destination points:
+This source and destination points taken for the perspective transform are shown below.
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+| 580, 460      | 100, 0        | 
+| 735, 460      | 1180, 0       |
+| 0, 720        | 100, 720      |
+| 1280, 720     | 1180, 0       |
 
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
+As expected the source and destination points we pick impact the tranformed image quite a bit. This is more pronounced when the images contain shadows. An interesting observation is the occasionally better perspective transform and lane detection was achieved when the source images were taken to the ends of the image, rather than to the ends of the lane. 
+
+Shown below are a thresholded image before and after the perspective transform is applied 
 
 ![alt text](./writeup_images/perspective.png)
 
