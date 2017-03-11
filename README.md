@@ -85,14 +85,14 @@ Applying the same distortion correction as above
 ![alt text](./writeup_images/dist_road.png)
 
 ####2. Binary thresholding using Gradient and Color tranforms 
-A combination of color and gradient thresholds was used to generate the binary image. Four different transforms were used to generate the thresholded binary image. 
+A combination of color and gradient thresholds was used to generate the binary image. Four different thresholds were used to generate the thresholded binary image. 
 
-*S-color tranform
-*SobelX gradient
-*Sobel gradient magnitude
-*Sobel gradient direction
+* S-color tranform
+* SobelX gradient
+* Sobel gradient magnitude
+* Sobel gradient direction
 
-The following thresholds were used based on experimentation.
+The following thresholds were narrowed based on experimentation.
 
 | Transform               | Threshold     | 
 |:-----------------------:|:-------------:| 
@@ -106,6 +106,8 @@ The final thresholded image is obtained by combining the various transforms as s
 ```
 combined_binary[(s_binary == 1) | (sxbinary == 1) | ((smagbinary == 1) & (sdirbinary == 1))] = 1
 ````
+
+The below images show the effect of thresholding. The top image shows SobelX gradient and Color transform apllied, whereas the bottom image shows the result with all four thresholds applied
 
 ![alt text](./writeup_images/gradient_threshold.png)
 
