@@ -1,5 +1,8 @@
 # SDC Advanced Lane Detection
----
+The goal of this project is to understand and implement a simple lane detection pipeline from the images recorded by a center car camera. Distortion induced by the camera is taken into account and correction is applied to the image feed. As described below, an image pipeline comprising of multiple transforms is implemented resulting in a "birds-eye view" of the front facing camera image. Polynomial fits and various statistics during the process are captured and displayed.
+
+It is clear that simple image processing techniques are not sufficient to build a robust pipeline to detect lanes. Shadows on the road along with various road colors have a huge impact on detection accuracy. It will be interesting to further understand the accuracy of the current state-of-art approaches to lane detection. 
+
 The goals / steps of this project are the following:
 
 * Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
@@ -30,17 +33,47 @@ The goals / steps of this project are the following:
 ####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Advanced-Lane-Lines/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
 
 You're reading it!
+
+Run the python notebook for the pipeline and lane detection video. Implementation consists of the following files. 
+
+lane_line_detection.ipynb - Runs the pipeline on individual test images and  video  
+gen_cam_cal.py - Generates camera calibration matrix and distortion coefficients using chessboard images
+gen_process_image.py - Implements Sobel gradients, color and perspective tranforms
+gen_linefit.py - Curve fits for lane detection  
+gen_stats_display.py - Calculates curvature, offset and implemets polyfill and anotation of images
+gen_detection_pipeline.py - Implemets the entire pipeline
+    
 ###Camera Calibration
 
 ####1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is contained in the first code cell of the IPython notebook located in "./examples/example.ipynb" (or in lines # through # of the file called `some_file.py`).  
+Camera matrix and distortion coefficients are calculated using a set of chessboard images and Opencv functions.
 
-I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
+First step is to map 3D real world object points to 2D image space for the chessboard images. The chessboard images are fixed on a constant XY plane during the capture of chessboard images, so object points are 3D points with Z axis of 0. 
 
-I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
+```python
+    objp = np.zeros((6*9,3), np.float32)
+    objp[:,:2] = np.mgrid[0:9,0:6].T.reshape(-1,2)
+```
 
-![alt text][image1]
+Then, we find internal corners of the chessboard using the Opencv function `cv2.findChessboardCorners()` and add the (x,y) coordinates to image space as shown below  
+```python
+    ret, corners = cv2.findChessboardCorners(gray, (9,6),None)
+```
+
+Finally calibration matrix (mtx) and distortion coefficients (dst) are calculated using the `cv2.calibrateCamera()` function
+```python
+    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
+```    
+
+To remove distortion in an image, the function `cv2.undistort()` is applied with calibration matrix and distortion coefficients found above.
+```python
+dst = cv2.undistort(img, cam_mtx, cam_dist, None, cam_mtx)
+```
+
+Applying this on chessboard images, we get 
+
+![Original Distorted Image](./writeup_images/camera_dist_correct.png)
 
 ###Pipeline (single images)
 
