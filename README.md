@@ -25,9 +25,7 @@ The goals / steps of this project are the following:
 [video1]: ./project_video.mp4 "Video"
 
 ---
-###Writeup / README
-
-You're reading it!
+###Code
 
 Run the python notebook for the pipeline and lane detection video. Implementation consists of the following files located in the source directory
 
@@ -182,8 +180,8 @@ Shown below is the curve fitted lane lines with sliding windows and histogram of
 ![alt text](./writeup_images/curvefit.png)
 
 Even in the limited test video provided, there are interesting cases where the entire thresholding and lane detection pipeline fails. They fall primarily in two areas
-1) Frames where the ends of the image do not have any active(ON) pixels since the line is dotted. Due to the nature of polyfit, this almost always returns an erroroneus fit
-2) Frames with shadows which make the processed images extremely noisy making it harder to even detect lane lines resulting in gross failures
+* Frames where the ends of the image do not have any active(ON) pixels since the line is dotted. Due to the nature of polyfit, this almost always returns an erroroneus fit
+* Frames with shadows which make the processed images extremely noisy making it harder to even detect lane lines resulting in gross failures
 
 Error correction for both these cases are implemented as shown below
 In both these cases, the result is manifested as the right dotted white line detected being too far off (to the left or right) from its actual location. Here we measure the average road width and compare if it changed significantly (more than 15%) and apply correction  
@@ -207,25 +205,51 @@ If the detected roadwidth changes significantly compared to the previous frame, 
 
 ####5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+Radius of curvature and vehicle offset from center is calculated in the file `gen_stats_display.py`
 
+ First, the lanes detected in pixels are converted to lanes in meters and radii of curvature are calculated based on the formula below
+
+```python
+    ym_per_pix = 30/720 # meters per pixel in y dimension
+    xm_per_pix = 3.7/700 # meters per pixel in x dimension
+
+    # Fit new polynomials to x,y in world space
+    left_fit_cr = np.polyfit(ploty*ym_per_pix, leftx*xm_per_pix, 2)
+    right_fit_cr = np.polyfit(ploty*ym_per_pix, rightx*xm_per_pix, 2)
+    
+    # Calculate the new radii of curvature
+    left_curverad = ((1 + (2*left_fit_cr[0]*y_eval*ym_per_pix + left_fit_cr[1])**2)**1.5) / np.absolute(2*left_fit_cr[0])
+    right_curverad = ((1 + (2*right_fit_cr[0]*y_eval*ym_per_pix + right_fit_cr[1])**2)**1.5) / np.absolute(2*right_fit_cr[0])
+```
+
+Offset from center is calculated based on the assumption that the camera is the center of the image. 
+```python
+    xm_per_pix = 3.7/700
+    
+    offset_px = (center - 0.5*(leftx[y_eval] + rightx[y_eval]))   
+    offset = xm_per_pix * offset_px
+```
+    
 ####6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+All the functions for polyfill `filled_image()` and anotation `anotate_image()` are included in the file `gen_stats_display.py`
+
+This entire pipeline is implemented in the file `gen_detection_pipeline.py`. Shown below is an image before and after passing through the pipeline
 
 ![alt text](./writeup_images/pipeline.png)
 ---
 
 ###Pipeline (video)
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
+####1. 
 
-Here's a [link to my video result](./output_video/adv_lane_track.mp4)
+Here are links to the video output [link to my video result](./output_video/adv_lane_track.mp4).
+
+Another version is shown here [link to my video result](./output_video/adv_lane_track1.mp4). The difference in both videos is mostly due to the areas selected for perspective transform and thresholds selected for color and gradient transforms. 
 
 ---
 
-###Discussion
+###Discussion and further work
+This project is a light touch introduction to camera calibration, color and perspective transforms and curve fitting functions. However, it is not very robust and depends heavily on many factors going right. 
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
-
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+As you can see the pipeline is not robust in areas where the road has strong shadows and is wobbly. Also sections of the road with lighter color(concrete sections) combined with reflections of the sun make detecting lane especially the white dotted right lines much harder. There is already significant volume of academic research on shadow detection and elimination in images and this is an area that i would like to further pursue. 
