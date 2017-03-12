@@ -33,7 +33,8 @@ Run the python notebook `lane_line_detection.ipynb` for the pipeline and lane de
 * source/gen_stats_display.py       -   Calculates curvature, offset and implements polyfill and anotation of images
 * source/gen_detection_pipeline.py  -   Implements the entire pipeline
 * out_images                        -   Folder with images from various stages of the pipeline
-    
+* out_videos                        -   Folder with lane detected output videos 
+
 ###Camera Calibration
 
 Camera matrix and distortion coefficients are calculated using a set of chessboard images and Opencv functions.
