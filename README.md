@@ -97,7 +97,7 @@ The final thresholded image is obtained by combining the various transforms as s
     combined_binary[(s_binary == 1) | (sxbinary == 1) | ((smagbinary == 1) & (sdirbinary == 1))] = 1
 ```
 
-The below images show the effect of thresholding. The top image shows SobelX gradient and Color transform apllied, whereas the bottom image shows the result with all four thresholds applied
+The images below show the effect of thresholding. The top image shows SobelX gradient and Color transform apllied, whereas the bottom image shows the result with all four thresholds applied
 
 ![alt text](./writeup_images/gradient_threshold.png)
 
