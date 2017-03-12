@@ -168,7 +168,7 @@ These good indices are appended to an array. At the end of each iteration, the m
             leftx_current = np.int(np.mean(nonzerox[good_left_inds]))
         if len(good_right_inds) > minpix:        
             rightx_current = np.int(np.mean(nonzerox[good_right_inds]))
-```python
+```
 
 Once the sliding window is moved across the entire image, the non-zero x and y pixels are curve fitted using a 2nd order polynomial to detect lane lines  
 
