@@ -128,10 +128,47 @@ Shown below are a thresholded image before and after the perspective transform i
 ![alt text](./writeup_images/perspective.png)
 
 
-####4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
+####4. Identifying lane-lines and polyfit
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+The next step is to identify lane lines from the perspective trasformed image. For most instances, thresolding coupled with perspective transform provide reasonably clean outlines of the lane pixels. A sliding window technique is then used to identify the lane pixels. 
 
+First, a histogram of ON pixels is run the bottom half of image. 
+```python
+    histogram = np.sum(warped_img[warped_img.shape[0]/2:,:], axis=0)
+```
+Then the location high intensity areas on the left and right sections of image are identified to give a starting location for the sliding window. 
+
+```python
+    end_margin_px = 100
+    #Dont start search for the entire image, look within the perspective window to avoid corner cases
+    midpoint = np.int(histogram.shape[0]/2)
+    leftx_base = np.argmax(histogram[end_margin_px:midpoint]) + end_margin_px
+    rightx_base = np.argmax(histogram[midpoint+end_margin_px:histogram.shape[0]-100]) + midpoint + end_margin_px
+```
+
+The sliding window is moved along the the image and for each iteration of the window non-zero pixels in x and y direction are idenitifed.
+
+```python
+        good_left_inds = ((nonzeroy >= win_y_low) & (nonzeroy < win_y_high) & (nonzerox >= win_xleft_low) & (nonzerox < win_xleft_high)).nonzero()[0]
+        good_right_inds = ((nonzeroy >= win_y_low) & (nonzeroy < win_y_high) & (nonzerox >= win_xright_low) & (nonzerox < win_xright_high)).nonzero()[0]
+```
+These good indices are appended to an array. At the end of each iteration, the mean of non-zero pixels is used to center the sliding windows of the next iteration. If there are not enough pixels, then the location of the window stays the same as before. 
+
+```python
+    if len(good_left_inds) > minpix:
+            leftx_current = np.int(np.mean(nonzerox[good_left_inds]))
+        if len(good_right_inds) > minpix:        
+            rightx_current = np.int(np.mean(nonzerox[good_right_inds]))
+```python
+
+Once the sliding window is moved across the image, the non-zero x and y pixels are curve fitted using a 2nd order polynomial to detect lane lines  
+
+```python
+    left_fit = np.polyfit(lefty, leftx, 2)
+    right_fit = np.polyfit(righty, rightx, 2)
+```
+
+Shown below is a
 ![alt text](./writeup_images/curvefit.png)
 
 ####5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
