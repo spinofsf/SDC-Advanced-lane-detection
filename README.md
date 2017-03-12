@@ -78,6 +78,7 @@ Applying the same distortion correction as above
 ![alt text](./writeup_images/dist_road.png)
 
 ####2. Binary thresholding using Gradient and Color tranforms 
+
 A combination of color and gradient thresholds was used to generate the binary image. Four different thresholds were used to generate the thresholded binary image. 
 
 * S-color tranform
@@ -98,7 +99,7 @@ The final thresholded image is obtained by combining the various transforms as s
 
 ```python
     combined_binary[(s_binary == 1) | (sxbinary == 1) | ((smagbinary == 1) & (sdirbinary == 1))] = 1
-````
+```
 
 The below images show the effect of thresholding. The top image shows SobelX gradient and Color transform apllied, whereas the bottom image shows the result with all four thresholds applied
 
@@ -106,7 +107,7 @@ The below images show the effect of thresholding. The top image shows SobelX gra
 
 ####3. Perspective transform
 
-The thresholded image is then run through a Perspective tranform to generate a birds-eye view image. This is accomplished by the opencv functions 
+The thresholded image is then run through a Perspective tranform to generate a birds-eye view image. This is accomplished by the opencv functions `cv2.getPerspectiveTransform()` and `cv2.warpPerspective()`
 
 ```python 
     M = cv2.getPerspectiveTransform(src, dst)
@@ -131,6 +132,8 @@ Shown below are a thresholded image before and after the perspective transform i
 ####4. Identifying lane-lines and polyfit
 
 The next step is to identify lane lines from the perspective trasformed image. For most instances, thresolding coupled with perspective transform provide reasonably clean outlines of the lane pixels. A sliding window technique is then used to identify the lane pixels. 
+
+This section is implemented in `gen_lanefit.py`
 
 First, a histogram of ON pixels is run the bottom half of image. 
 ```python
@@ -171,6 +174,30 @@ Once the sliding window is moved across the entire image, the non-zero x and y p
 Shown below is the curve fitted lane lines with sliding windows and histogram of pixels  
 
 ![alt text](./writeup_images/curvefit.png)
+
+Even in the limited test video provided, there are interesting cases where the entire thresholding and lane detection pipeline fails. They fall primarily in two areas
+1) Frames where the ends of the image do not have any active(ON) pixels since the line is dotted. Due to the nature of polyfit, this almost always returns an erroroneus fit
+2) Frames with shadows which make the processed images extremely noisy making it harder to even detect lane lines resulting in gross failures
+
+Error correction for both these cases are implemented as shown below
+In both these cases, the result is manifested as the right dotted white line detected being too far off (to the left or right) from its actual location. Here we measure the average road width and compare if it changed significantly (more than 15%) and apply correction  
+
+First we measure the average roadwidth and curvature of the road as shown below
+
+```python
+    curr_road_width = np.average(right_fitx - left_fitx)    
+    lc_rad, rc_rad = calc_curv(left_fitx, right_fitx, ploty)
+```
+
+If the detected roadwidth changes significantly compared to the previous frame, it is ignored. If the leftlane is calculated with good precision, then the right lane is calculated by just adding the average roadwidth to the left lane
+
+```python
+    if ((curr_road_width < 0.85*avg_road_width) | (curr_road_width > 1.15*avg_road_width) | (rc_rad < 50)):
+         curr_road_width = avg_road_width
+         right_fitx = left_fitx + curr_road_width
+    else:
+         avg_road_width = curr_road_width
+```
 
 ####5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
