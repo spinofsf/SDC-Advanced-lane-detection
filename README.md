@@ -3,13 +3,12 @@ The goal of this project is to understand and implement a simple lane detection 
 
 It is clear that simple image processing techniques are not sufficient to build a robust pipeline to detect lanes. Shadows on the road along with various road colors have a huge impact on detection accuracy. It will be interesting to further understand the accuracy of the current state-of-art approaches to lane detection. 
 
-The goals / steps of this project are the following:
-
-* Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
-* Apply a distortion correction to raw images.
+Key steps of this pipeline are:
+* Compute the camera calibration matrix and distortion coefficients from a set of chessboard images.
+* Apply distortion correction to raw images.
 * Use color transforms, gradients, etc., to create a thresholded binary image.
-* Apply a perspective transform to rectify binary image ("birds-eye view").
-* Detect lane pixels and fit to find the lane boundary.
+* Apply a perspective transform to generate ("birds-eye view").
+* Detect lane pixels and polyfit them to find the lane lines
 * Determine the curvature of the lane and vehicle position with respect to center.
 * Warp the detected lane boundaries back onto the original image.
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
@@ -203,11 +202,11 @@ If the detected roadwidth changes significantly compared to the previous frame, 
          avg_road_width = curr_road_width
 ```
 
-####5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+####5. Metrics - Radius of curvature & Offset from center
 
 Radius of curvature and vehicle offset from center is calculated in the file `gen_stats_display.py`
 
- First, the lanes detected in pixels are converted to lanes in real world meters 
+ First, the lanes detected in pixels are converted to lanes in real world meters and curve fitted 
 ```python
     ym_per_pix = 30/720 # meters per pixel in y dimension
     xm_per_pix = 3.7/700 # meters per pixel in x dimension
@@ -233,9 +232,16 @@ Offset from center is calculated based on the assumption that the camera is the 
     offset = xm_per_pix * offset_px
 ```
     
-####6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
-
+####6. Pipeline output
 All the functions for polyfill `filled_image()` and anotation `anotate_image()` are included in the file `gen_stats_display.py`
+
+First the detected lane is mapped on the warped image using the function `cv2.fillPoly()` and it is then converted into original image space using inverse perspective transform `cv2.warpPerspective()`
+
+```python
+    cv2.fillPoly(color_warp, np.int_([pts]), (0,255, 0))
+
+    newwarp = cv2.warpPerspective(color_warp, Minv, (orig_image.shape[1], orig_image.shape[0]))     
+```
 
 This entire pipeline is implemented in the file `gen_detection_pipeline.py`. Shown below is an image before and after passing through the pipeline
 
