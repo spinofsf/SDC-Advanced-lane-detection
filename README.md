@@ -32,7 +32,6 @@ Run the python notebook `lane_line_detection.ipynb` for the pipeline and lane de
 * gen_linefit.py             - Curve fit for lane detection  
 * gen_stats_display.py       - Calculates curvature, offset and implements polyfill and anotation of images
 * gen_detection_pipeline.py  - Implements the entire pipeline
-
 * out_images                 - Folder with images from various stages of the pipeline
     
 ###Camera Calibration
