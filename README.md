@@ -119,7 +119,7 @@ This source and destination points taken for the perspective transform are shown
 | 0, 720        | 100, 720      |
 | 1280, 720     | 1180, 0       |
 
-As expected the source and destination points we pick impact the tranformed image quite a bit. This is more pronounced when the images contain shadows. An interesting observation is the occasionally better perspective transform and lane detection was achieved when the source images were taken to the ends of the image, rather than to the ends of the lane. 
+As expected the source and destination points we pick impact the tranformed image quite a bit. This is more pronounced when the images contain shadows. An interesting observation is that occasionally better perspective transform and lane detection are achieved when the source images were taken to the ends of the image (rather than to the ends of the lane). 
 
 Shown below are a thresholded image before and after the perspective transform is applied 
 
