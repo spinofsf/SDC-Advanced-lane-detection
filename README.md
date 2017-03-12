@@ -67,8 +67,7 @@ Applying this on chessboard images, we get
 
 We can clearly see distortion at the top of the left image corrected after applying `cv2.undistort()`
 
-###Pipeline (single images)
-
+###Image Pipeline 
 ####1. Distortion correction
 
 Applying the same distortion correction as above
