@@ -39,7 +39,7 @@ Run the python notebook `lane_line_detection.ipynb` for the pipeline and lane de
 
 Camera matrix and distortion coefficients are calculated using a set of chessboard images and Opencv functions.
 
-First step is to map 3D real world object points to 2D image space for the chessboard images. The chessboard images are fixed on a constant XY plane during the capture of chessboard images, so object points are 3D points with Z axis of 0. 
+First step is to map 3D real world object points to 2D image space for the chessboard images. The chessboard images are fixed on a constant XY plane during capture, so object points are 3D points with Z axis of 0. 
 
 ```python
     objp = np.zeros((6*9,3), np.float32)
