@@ -4,14 +4,12 @@ The goal of this project is to understand and implement a simple lane detection 
 It is clear that simple image processing techniques are not sufficient to build a robust pipeline to detect lanes. Shadows on the road along with various road colors have a huge impact on detection accuracy. It will be interesting to further understand the accuracy of the current state-of-art approaches to lane detection. 
 
 Key steps of this pipeline are:
-* Compute the camera calibration matrix and distortion coefficients from a set of chessboard images.
-* Apply distortion correction to raw images.
-* Use color transforms, gradients, etc., to create a thresholded binary image.
+* Calibrate and correct camera distortion using chessboard images 
+* Generate calibration matrix and distortion coefficients and undistort images
+* Apply color transforms, gradients, etc., to create a thresholded binary image.
 * Apply a perspective transform to generate ("birds-eye view").
-* Detect lane pixels and polyfit them to find the lane lines
-* Determine the curvature of the lane and vehicle position with respect to center.
-* Warp the detected lane boundaries back onto the original image.
-* Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
+* Detect lane pixels and polyfit them to find the lane lines and warp back to the original image
+* Anotate images with lane boundaries and metrics like lane curvature and offset from center
 
 [//]: # (Image References)
 
