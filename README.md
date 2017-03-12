@@ -113,6 +113,7 @@ The thresholded image is then run through a Perspective tranform to generate a b
     M = cv2.getPerspectiveTransform(src, dst)
     warped = cv2.warpPerspective(image, M, image_size, flags=cv2.INTER_LINEAR)
 ```
+
 This source and destination points taken for the perspective transform are shown below.
 
 | Source        | Destination   | 
@@ -136,14 +137,16 @@ The next step is to identify lane lines from the perspective trasformed image. F
 This section is implemented in `gen_lanefit.py`
 
 First, a histogram of ON pixels is run the bottom half of image. 
+
 ```python
     histogram = np.sum(warped_img[warped_img.shape[0]/2:,:], axis=0)
 ```
+
 Then the location high intensity areas on the left and right sections of image are identified to give a starting location for the sliding window. 
 
 ```python
     end_margin_px = 100
-    #Dont start search for the entire image, look within the perspective window to avoid corner cases
+
     midpoint = np.int(histogram.shape[0]/2)
     leftx_base = np.argmax(histogram[end_margin_px:midpoint]) + end_margin_px
     rightx_base = np.argmax(histogram[midpoint+end_margin_px:histogram.shape[0]-100]) + midpoint + end_margin_px
@@ -152,9 +155,12 @@ Then the location high intensity areas on the left and right sections of image a
 The sliding window is moved along the the image and for each iteration of the window non-zero pixels in x and y direction are idenitifed.
 
 ```python
-        good_left_inds = ((nonzeroy >= win_y_low) & (nonzeroy < win_y_high) & (nonzerox >= win_xleft_low) & (nonzerox < win_xleft_high)).nonzero()[0]
-        good_right_inds = ((nonzeroy >= win_y_low) & (nonzeroy < win_y_high) & (nonzerox >= win_xright_low) & (nonzerox < win_xright_high)).nonzero()[0]
+     good_left_inds = ((nonzeroy >= win_y_low) & (nonzeroy < win_y_high) & 
+                                (nonzerox >= win_xleft_low) & (nonzerox < win_xleft_high)).nonzero()[0]
+     good_right_inds = ((nonzeroy >= win_y_low) & (nonzeroy < win_y_high) &
+                                (nonzerox >= win_xright_low) & (nonzerox < win_xright_high)).nonzero()[0]
 ```
+
 These good indices are appended to an array. At the end of each iteration, the mean of non-zero pixels is used to center the sliding windows of the next iteration. If there are not enough pixels, then the location of the window stays the same as before. 
 
 ```python
