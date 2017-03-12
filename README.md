@@ -244,9 +244,9 @@ This entire pipeline is implemented in the file `gen_detection_pipeline.py`. Sho
 
 ###Video Output
 
-Here are links to the video output [link to my video result](./output_video/adv_lane_track.mp4).
+Here are links to the [video output](./output_video/adv_lane_track.mp4).
 
-Another version is shown here [link to my video result](./output_video/adv_lane_track1.mp4). The difference in both videos is mostly due to the areas selected for perspective transform and thresholds selected for color and gradient transforms. 
+Another version is shown [here](./output_video/adv_lane_track1.mp4). The difference in both videos is mostly due to the areas selected for perspective transform and thresholds selected for color and gradient transforms. 
 
 ---
 
