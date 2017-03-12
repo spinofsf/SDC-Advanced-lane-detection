@@ -161,14 +161,15 @@ These good indices are appended to an array. At the end of each iteration, the m
             rightx_current = np.int(np.mean(nonzerox[good_right_inds]))
 ```python
 
-Once the sliding window is moved across the image, the non-zero x and y pixels are curve fitted using a 2nd order polynomial to detect lane lines  
+Once the sliding window is moved across the entire image, the non-zero x and y pixels are curve fitted using a 2nd order polynomial to detect lane lines  
 
 ```python
     left_fit = np.polyfit(lefty, leftx, 2)
     right_fit = np.polyfit(righty, rightx, 2)
 ```
 
-Shown below is a
+Shown below is the curve fitted lane lines with sliding windows and histogram of pixels  
+
 ![alt text](./writeup_images/curvefit.png)
 
 ####5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
