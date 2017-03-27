@@ -1,6 +1,6 @@
 
 ### Improvement from prior submission
-* To improve the few frames where the car deviated from the lane lines, the following modifications were done to the code
+To improve the few frames where the car deviated from the lane lines, the following modifications were done to the code
  1) Averaging was done over the last 5 frames 
  2) Frames were verified to check if there is significant change in lane width than the previous frame. If significant change occurred, then the current frame was dropped and the previous frame was used.
  3) Additional tweaks were done to the color thresholds especially for the magnitude and binary thresholds. This resulted in a much cleaner binary image especially during the 
