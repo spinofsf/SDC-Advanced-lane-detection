@@ -34,9 +34,9 @@ Code below in module `gen_linefit.py()` implements averaging of coefficients ove
     right_fitx = right_fit_avg[0]*ploty**2 + right_fit_avg[1]*ploty + right_fit_avg[2]    
 ```    
 
-Other color spaces were experimented with instead of just the s-channle. My observation was that using only one channel is not optimal, rather using multiple color spaces in parallel and identifying the best fit to be used will lead to a more robust solution. Experiments show two threshold detectos of RV and SV channels can be used to improve the solution. This will be worked on in the future as time permits.
+Other color spaces were experimented with instead of just the s-channle. My observation was that using only one channel is not optimal, rather using multiple color spaces in parallel and identifying the best fit to be used will lead to a more robust solution. Experiments show two threshold detectos of RV and SV channels can be used to improve the solution. 
 
-Here is the modified [video output](./output_video/adv_lane_track_mod.mp4). As you can see the variations are much more gradual and the lane detection is improved.
+Here is the modified [video output](./output_video/adv_lane_track_mod_2.mp4). As you can see the variations are much more gradual and the lane detection is improved.
 
 
 # SDC Advanced Lane Detection
