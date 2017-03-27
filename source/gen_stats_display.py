@@ -70,7 +70,7 @@ def filled_image(orig_image, warp_image, Minv, left_fitx, right_fitx, ploty):
     result_img = cv2.addWeighted(orig_image, 1, newwarp, 0.3, 0)
     #plt.imshow(result)
     
-    return result_img
+    return result_img, pts
 
 
 ## Anotates an image with a statistics label of curvature and offset 

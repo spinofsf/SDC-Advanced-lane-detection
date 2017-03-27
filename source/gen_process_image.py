@@ -39,6 +39,8 @@ def undistort_image(img, cam_mtx, cam_dist):
 # 
 def bin_threshold_pipeline(image, s_thresh=(170, 255), sx_thresh=(20, 100), smag_thresh=(20,100), sdir_thresh=(0.7,1.3)):
    
+    #s_thresh=(170, 255), sx_thresh=(20, 100), smag_thresh=(20,100), sdir_thresh=(0.7,1.3)
+
     img = np.copy(image)
     img = img[:,:,::-1]
 
@@ -90,7 +92,7 @@ def bin_threshold_pipeline(image, s_thresh=(170, 255), sx_thresh=(20, 100), smag
     
     # Combine the two binary thresholds
     combined_binary = np.zeros_like(sxbinary)
-    combined_binary[(s_binary == 1) | (sxbinary == 1) | ((smagbinary == 1) & (sdirbinary == 1))] = 1
+    combined_binary[(s_binary == 1) | ((sxbinary == 1) & (sybinary==1)) | ((smagbinary == 1) & (sdirbinary == 1))] = 1
 
     return color_binary, combined_binary
 

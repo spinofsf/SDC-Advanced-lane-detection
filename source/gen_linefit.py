@@ -29,7 +29,7 @@ from gen_stats_display import *
 #     ploty - Y coordinates  
 #     adjusted - boolean - True if error correction applied on the image
 #
-def poly_fit_rimage(warped_img, frame_no, avg_road_width):
+def poly_fit_rimage(warped_img, frame_no, avg_road_width, leftfit_q, rightfit_q):
  
     # Choose the number of sliding windows
     nwindows = 9
@@ -166,29 +166,46 @@ def poly_fit_rimage(warped_img, frame_no, avg_road_width):
     #else:
     #    left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
     
+        
     left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
     right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
-              
+
     out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]
     out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]
-    
+        
     ## additional check to eliminate error frames
     ## Check roadwidth to ensure that it is within 20% of expected width
     curr_road_width = np.average(right_fitx - left_fitx)
     
     lc_rad, rc_rad = calc_curv(left_fitx, right_fitx, ploty)
 
-    if (frame_no == 1):
+    if (frame_no < 6):
         avg_road_width = curr_road_width
+        leftfit_q.append(left_fit)
+        rightfit_q.append(right_fit)
+    
     else:
-        if ((curr_road_width < 0.85*avg_road_width) | (curr_road_width > 1.15*avg_road_width) | (rc_rad < 50)):
+        if ((curr_road_width < 0.85*avg_road_width) | (curr_road_width > 1.15*avg_road_width) | (rc_rad < 130)):
             # cause for concern that there may be a gross error, check for curvatures for further proof
+            #print ("corrected %d %.1f %.1f %.1f"%(frame_no, curr_road_width, avg_road_width, rc_rad))        
             curr_road_width = avg_road_width
-            right_fitx = left_fitx + curr_road_width
-            #print ("corrected")
+            #right_fitx = left_fitx + curr_road_width            
+        
         else:
             avg_road_width = curr_road_width
-        
-    #print("out", frame_no, left_fit[0], right_fit[0], ";", left_fit[2], right_fit[2], "; %.1f %.1f"%(avg_road_width, rc_rad))
+            leftfit_q.append(left_fit)
+            rightfit_q.append(right_fit)
+            leftfit_q.pop(0)
+            rightfit_q.pop(0)
     
-    return out_img, left_fitx, right_fitx, ploty, adjusted, curr_road_width
+    left_fit_avg = np.average(leftfit_q,axis =0)
+    right_fit_avg = np.average(rightfit_q,axis =0)       
+
+    left_fitx = left_fit_avg[0]*ploty**2 + left_fit_avg[1]*ploty + left_fit_avg[2]
+    right_fitx = right_fit_avg[0]*ploty**2 + right_fit_avg[1]*ploty + right_fit_avg[2]
+    
+    #print("out", frame_no, left_fit[0], right_fit[0], ";", left_fit[2], right_fit[2], "; %.1f %.1f"%(avg_road_width, rc_rad))
+
+    #print("fit queue",len(leftfit_q), len(rightfit_q), leftfit_q, rightfit_q)    
+
+    return out_img, left_fitx, right_fitx, ploty, adjusted, curr_road_width, leftfit_q, rightfit_q
