@@ -1,3 +1,16 @@
+
+#Improvement from prior submission
+* To improve the few frames where the car deviated from the lane lines, the following modifications were done to the code
+ 1) Averaging was done over the last 5 frames 
+ 2) Frames were verified to check if there is significant change in lane width than the previous frame. If significant change occurred, then the current frame was dropped and the previous frame was used.
+ 3) Additional tweaks were done to the color thresholds especially for the magnitude and binary thresholds. This resulted in a much cleaner binary image especially during the 
+ 4) The source rectangle for perspective transform was tweaked to include a bit more distance on x-axis at the top portion of the rectangle. This gave a much cleaner and straighter warped image.
+ 
+ Code changes are shown below
+
+
+
+
 # SDC Advanced Lane Detection
 The goal of this project is to understand and implement a simple lane detection pipeline from the images recorded by a center car camera. Distortion induced by the camera is taken into account and correction is applied to the image feed. As described below, an image pipeline comprising of multiple transforms(color, gradient and perspective) is implemented resulting in a "birds-eye view" of the front facing camera image. Polynomial fits and various statistics during the process are captured and displayed.
 
