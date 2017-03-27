@@ -63,7 +63,7 @@ Key steps of this pipeline are:
 [video1]: ./project_video.mp4 "Video"
 
 ---
-###Code
+### Code
 
 Run the python notebook `lane_line_detection.ipynb` for the pipeline and lane detection video. Implementation consists of the following files located in the source directory
 
@@ -76,7 +76,7 @@ Run the python notebook `lane_line_detection.ipynb` for the pipeline and lane de
 * out_images                        -   Folder with images from various stages of the pipeline
 * out_videos                        -   Folder with lane detected output videos 
 
-###Camera Calibration
+### Camera Calibration
 
 Camera matrix and distortion coefficients are calculated using a set of chessboard images and Opencv functions.
 
@@ -108,13 +108,13 @@ Applying this on chessboard images, we get
 
 We can clearly see distortion at the top of the left image corrected after applying `cv2.undistort()`
 
-###Image Pipeline 
-####1. Distortion correction
+### Image Pipeline 
+#### 1. Distortion correction
 
 Applying the same distortion correction as above
 ![alt text](./writeup_images/dist_road.png)
 
-####2. Binary thresholding using Gradient and Color tranforms 
+#### 2. Binary thresholding using Gradient and Color tranforms 
 
 A combination of color and gradient thresholds was used to generate the binary image. Four different thresholds were used to generate the thresholded binary image. 
 
@@ -142,7 +142,7 @@ The images below show the effect of thresholding. The top image shows SobelX gra
 
 ![alt text](./writeup_images/gradient_threshold.png)
 
-####3. Perspective transform
+#### 3. Perspective transform
 
 The thresholded image is then run through a Perspective tranform to generate a birds-eye view image. This is accomplished by the opencv functions `cv2.getPerspectiveTransform()` and `cv2.warpPerspective()`
 
@@ -167,7 +167,7 @@ Shown below are a thresholded image before and after the perspective transform i
 ![alt text](./writeup_images/perspective.png)
 
 
-####4. Identifying lane-lines and polyfit
+#### 4. Identifying lane-lines and polyfit
 
 The next step is to identify lane lines from the perspective trasformed image. For most instances, thresolding coupled with perspective transform provide reasonably clean outlines of the lane pixels. A sliding window technique is then used to identify the lane pixels. 
 
@@ -242,7 +242,7 @@ If the detected roadwidth changes significantly compared to the previous frame, 
          avg_road_width = curr_road_width
 ```
 
-####5. Metrics - Radius of curvature & Offset from center
+#### 5. Metrics - Radius of curvature & Offset from center
 
 Radius of curvature and vehicle offset from center is calculated in the file `gen_stats_display.py`
 
@@ -272,7 +272,7 @@ Offset from center is calculated based on the assumption that the camera is the 
     offset = xm_per_pix * offset_px
 ```
     
-####6. Pipeline output
+#### 6. Pipeline output
 All the functions for polyfill `filled_image()` and anotation `anotate_image()` are included in the file `gen_stats_display.py`
 
 First the detected lane is mapped on the warped image using the function `cv2.fillPoly()` and it is then converted into original image space using inverse perspective transform `cv2.warpPerspective()`
@@ -288,7 +288,7 @@ This entire pipeline is implemented in the file `gen_detection_pipeline.py`. Sho
 ![alt text](./writeup_images/pipeline.png)
 ---
 
-###Video Output
+### Video Output
 
 Here are links to the [video output](./output_video/adv_lane_track.mp4).
 
@@ -296,7 +296,7 @@ Another version is shown [here](./output_video/adv_lane_track1.mp4). The differe
 
 ---
 
-###Discussion and further work
+### Discussion and further work
 This project is aN introduction to camera calibration, color and perspective transforms and curve fitting functions. However, it is not very robust and depends heavily on many factors going right. 
 
 As you can see the pipeline is not robust in areas where the road has strong shadows and is wobbly. Also sections of the road with lighter color(concrete sections) combined with reflections of the sun make detecting lane especially the white dotted right lines much harder. There is already significant volume of academic research on shadow detection and elimination in images and this is an area that i would like understand and implement in the near future.
