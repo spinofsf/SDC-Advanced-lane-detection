@@ -6,9 +6,37 @@ To improve the few frames where the car deviated from the lane lines, the follow
  3) Additional tweaks were done to the color thresholds especially for the magnitude and binary thresholds. This resulted in a much cleaner binary image especially during the 
  4) The source rectangle for perspective transform was tweaked to include a bit more distance on x-axis at the top portion of the rectangle. This gave a much cleaner and straighter warped image.
  
- Code changes are shown below
+ Code changes are implemented in module `gen_linefit.py()`. Shown below is error correction if the change in lane width is more than ~15% from frame to frame or if the radius is very bad indicating a bad fit
 
+```python
+       if ((curr_road_width < 0.85*avg_road_width) | (curr_road_width > 1.15*avg_road_width) | (rc_rad < 130)):
+            # cause for concern that there may be a gross error - ignore the frame
+            print ("corrected %d %.1f %.1f %.1f"%(frame_no, curr_road_width, avg_road_width, rc_rad))        
+            curr_road_width = avg_road_width
+        else:
+            avg_road_width = curr_road_width
+            
+            # if good fit, then add to the queue
+            leftfit_q.append(left_fit)
+            rightfit_q.append(right_fit)
+            leftfit_q.pop(0)
+            rightfit_q.pop(0)
+```
 
+Code below in module `gen_linefit.py()` implements averaging of coefficients over the last 5 frames. Those averaged coefficients are then used to fit the polynomial
+
+```python
+    # average last 5 frames and use those coefficients to fit the polynomial
+    left_fit_avg = np.average(leftfit_q,axis =0)
+    right_fit_avg = np.average(rightfit_q,axis =0)       
+
+    left_fitx = left_fit_avg[0]*ploty**2 + left_fit_avg[1]*ploty + left_fit_avg[2]
+    right_fitx = right_fit_avg[0]*ploty**2 + right_fit_avg[1]*ploty + right_fit_avg[2]    
+```    
+
+Other color spaces were experimented with instead of just the s-channle. My observation was that using only one channel is not optimal, rather using multiple color spaces in parallel and identifying the best fit to be used will lead to a more robust solution. Experiments show two threshold detectos of RV and SV channels can be used to improve the solution. This will be worked on in the future as time permits.
+
+Here is the modified [video output](./output_video/adv_lane_track_mod.mp4). As you can see the variations are much more gradual and the lane detection is improved.
 
 
 # SDC Advanced Lane Detection
