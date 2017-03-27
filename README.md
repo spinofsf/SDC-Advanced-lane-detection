@@ -1,9 +1,9 @@
 
 ### Improvement from prior submission
 To improve the few frames where the car deviated from the lane lines, the following modifications were done to the code
- 1) Averaging was done over the last 5 frames 
- 2) Frames were verified to check if there is significant change in lane width than the previous frame. If significant change occurred, then the current frame was dropped and the previous frame was used.
- 3) Additional tweaks were done to the color thresholds especially for the magnitude and binary thresholds. This resulted in a much cleaner binary image especially during the 
+ 1) Polynomial fit coefficients were averaged over the previous 5 frames 
+ 2) Frames were verified to check if there is significant change in lane width than the previous frame. If significant change occurred, then the current frame was dropped and the previous good frame was used instead.
+ 3) Slight tweaks were made to the color thresholds especially for the magnitude and binary thresholds. This resulted in a much cleaner binary thresholded image. 
  4) The source rectangle for perspective transform was tweaked to include a bit more distance on x-axis at the top portion of the rectangle. This gave a much cleaner and straighter warped image.
  
  Code changes are implemented in module `gen_linefit.py()`. Shown below is error correction if the change in lane width is more than ~15% from frame to frame or if the radius is very bad indicating a bad fit
